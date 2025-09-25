@@ -1,0 +1,44 @@
+
+@import url(home.css);
+
+.titulo{
+    backdrop-filter: blur(10px);
+    font-size: 50px;
+    border-radius: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+div#Plano_fundo{
+    backdrop-filter: blur(10px);
+    margin: 4% 25% 25% 25%;
+    padding: 10px; /* Ajuste o padding como necessário */
+    text-align: center;
+    border-radius: 30px;
+    font-weight: bold;
+    box-shadow: 4px 6px black;
+    
+
+}
+
+div#Plano_fundo.listaUsuarios {
+    margin: 2% 50% 5% 5% ;
+    position: absolute;
+
+}
+
+div#frenteUsuario.listaUsuarios {
+    background-color: rgb(255, 255, 255);
+    margin: 5px;
+    padding: 30px;
+    text-align: center;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 4px 5px 5px black;
+    padding: 25;
+    position: relative;
+     
+
+}
+

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turismo pelo Sudeste</title>
+    <link rel="stylesheet" href="../static/css/adm.css">
+</head>
+
+<body>
+<body>
+    {% set mensagem = get_flashed_messages() %}
+    {% if mensagem[0] == "Este Usuario ja esta cadastrado" %}
+        <div class="flash_alerta">
+            {{ mensagem[0] }}
+        </div>
+    {% elif mensagem[0] == "Usuario cadastrado com sucesso" %}
+        <div class="flash_alerta2">
+            {{ mensagem[0] }}
+        </div>
+    {% endif %}
+
+    <h1 class="titulo">Admistrador</h1>
+    <!-- resto do seu código continua normalmente -->
+</body>
+    
+
+    <div id = "Plano_fundo">
+        <h1>Cadastrar um usuario</h1>
+        <div id="Plano_frente">
+            <form action="/cadastrarUsuario" id="login" method="post">
+                <label for="nome">NOME</label>
+                <input type="text" name="nome" id="nome" required placeholder=" Digite seu nome: "><br>
+                <label for="senha" id="senha">SENHA</label>
+                <input type="text" name="senha" id="senha" required placeholder=" Digite sua senha: "><br><br>
+                <button type="submit" id="btn_login">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span> CADASTRAR
+
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id = fundoUsuario class = "listaUsuarios">
+        <h1> Usuario Cadastrado</h1>
+        <div id = frenteUsuario class="listaUsuarios">
+            {% if usuarios %}
+                {% for c in usuarios %}
+                    <ul>
+                        <li>{{c["nome"]}}</li>
+                    </ul>
+                {%endfor%}
+            {% else %}
+            <h1> Não existe usuario cadastrados</h1>
+            {%endif%}
+
+
+        </div>
+    </div>
+
+</body>
+
+</html>
