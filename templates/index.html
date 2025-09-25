@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turismo pelo Sudeste</title>
+    <title>Turismo pelo Sudeste - Login</title>
     <link rel="stylesheet" href="/static/css/home.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-
-<body>
 <body>
     {% set mensagem = get_flashed_messages() %}
     {% if mensagem %}
@@ -16,43 +14,84 @@
             {{ mensagem[0] }}
         </div>
     {% endif %}
-    <!-- resto do seu código continua normalmente -->
-</body>
 
-  
-
-    <div id = "Titulo">
-    <h1>Seja bem-vindo ao melhor site de turismo que você irá conhecer hoje!</h1> 
-    <br>
-    <hr>
+    <div id="Titulo">
+        <h1>Ponto de Partida</h1> 
+        <br>
+        <hr>
     </div>
 
-    <div id = "subtitulo"> 
-    <p>Procurando um destino para viajar? Vem que aqui é seu lugar!</p>
-    <p>Aqui temos os melhores Pontos Turísticos do Sudeste, venha conhece-los</p>
+    <div id="subtitulo"> 
+        <p>Procurando um destino para viajar? Vem que aqui é seu lugar!</p>
+        <p>Sua jornada começa aqui!. Estamos prontos para ajudá-lo</p>
     </div>
     
-
-    <div id = "Plano_fundo">
+    <div id="Plano_fundo">
         <h1>LOGIN</h1>
-        <h1>Site de Turismo</h1>
         <div id="Plano_frente">
             <form action="/login" id="login" method="post">
                 <label for="nome">NOME</label>
-                <input type="text" name="nome" id="nome" required placeholder=" Digite seu nome: "><br>
-                <label for="senha" id="senha">SENHA</label>
-                <input type="password" name="senha" id="senha" required placeholder=" Digite sua senha: "><br><br>
+                <input type="text" name="nome" id="nome" required placeholder="Digite seu nome">
+                
+                <label for="senha">SENHA</label>
+                <input type="password" name="senha" id="senha" required placeholder="Digite sua senha">
+                
                 <button type="submit" id="btn_login">
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span> ENTRAR
-
                 </button>
             </form>
+            
+            <button type="button" id="btn_mostrar_cadastro" class="btn-mostrar-cadastro">
+                <i class="fas fa-user-plus"></i>Cadastre-se aqui
+            </button>
+            
+            <div class="cadastro-section" id="cadastro_section" style="display: none;">
+                <h3>Cadastrar Nova Conta</h3>
+                <form action="/cadastrar" id="cadastro" method="post">
+                    <input type="text" name="nome" placeholder="Nome completo" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="senha" placeholder="Senha" required>
+                    <input type="password" name="confirmar_senha" placeholder="Confirmar senha" required>
+                    <div class="form-actions-cadastro">
+                        <button type="submit" id="btn_cadastrar">
+                            <i class="fas fa-user-plus"></i> CADASTRAR
+                        </button>
+                        <button type="button" id="btn_cancelar_cadastro" class="btn-cancelar-cadastro">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-</body>
+    <script>
+        // Controle do formulário de cadastro
+        document.getElementById('btn_mostrar_cadastro').addEventListener('click', function() {
+            const cadastroSection = document.getElementById('cadastro_section');
+            const btnMostrar = document.getElementById('btn_mostrar_cadastro');
+            
+            if (cadastroSection.style.display === 'none') {
+                cadastroSection.style.display = 'block';
+                btnMostrar.style.display = 'none';
+                // Scroll suave para o formulário
+                cadastroSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
 
+        document.getElementById('btn_cancelar_cadastro').addEventListener('click', function() {
+            const cadastroSection = document.getElementById('cadastro_section');
+            const btnMostrar = document.getElementById('btn_mostrar_cadastro');
+            
+            cadastroSection.style.display = 'none';
+            btnMostrar.style.display = 'block';
+            
+            // Limpar o formulário
+            document.getElementById('cadastro').reset();
+        });
+    </script>
+</body>
 </html>

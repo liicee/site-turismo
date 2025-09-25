@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Turismo pelo Sudeste</title>
+    <link rel="stylesheet" href="/static/css/perfil.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    {% set mensagem = get_flashed_messages() %}
+    {% if mensagem %}
+        <div class="flash_alerta">
+            {{ mensagem[0] }}
+        </div>
+    {% endif %}
+
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1><i class="fas fa-mountain"></i> Turismo Sudeste</h1>
+            </div>
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">
+                    <i class="fas fa-home"></i> Início
+                </a>
+                <a href="/perfil" class="nav-link active">
+                    <i class="fas fa-user"></i> Perfil
+                </a>
+                <a href="/logout" class="nav-link logout">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="/dashboard"><i class="fas fa-home"></i> Início</a>
+                <span><i class="fas fa-chevron-right"></i></span>
+                <span>Meu Perfil</span>
+            </div>
+
+            <div class="perfil-container">
+                <div class="perfil-header">
+                    <div class="foto-perfil">
+                        {% if user.foto_perfil %}
+                            <img src="/static/{{ user.foto_perfil }}" alt="Foto do perfil">
+                        {% else %}
+                            <div class="foto-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="perfil-info">
+                        <h1>{{ user.nome or 'Usuário' }}</h1>
+                        <p class="email">{{ user.email or 'Email não informado' }}</p>
+                        <p class="membro-desde">Membro desde: {{ user.data_cadastro or 'Data não disponível' }}</p>
+                    </div>
+                </div>
+
+                <div class="perfil-content">
+                    <div class="perfil-section">
+                        <h2><i class="fas fa-edit"></i> Editar Informações</h2>
+                        <form action="/atualizar_perfil" method="post" enctype="multipart/form-data" class="perfil-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="foto_perfil">Foto de Perfil</label>
+                                    <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*">
+                                    <small>Formatos aceitos: JPG, PNG, GIF (máx. 16MB)</small>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="nome">Nome Completo *</label>
+                                    <input type="text" id="nome" name="nome" value="{{ user.nome or '' }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email *</label>
+                                    <input type="email" id="email" name="email" value="{{ user.email or '' }}" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="endereco">Endereço</label>
+                                    <input type="text" id="endereco" name="endereco" value="{{ user.endereco or '' }}" placeholder="Rua, número, bairro, cidade">
+                                </div>
+                                <div class="form-group">
+                                    <label for="telefone">Telefone</label>
+                                    <input type="tel" id="telefone" name="telefone" value="{{ user.telefone or '' }}" placeholder="(00) 00000-0000">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cpf">CPF</label>
+                                    <input type="text" id="cpf" name="cpf" value="{{ user.cpf or '' }}" placeholder="000.000.000-00" maxlength="14">
+                                </div>
+                                <div class="form-group">
+                                    <label for="passaporte">Passaporte (Opcional)</label>
+                                    <input type="text" id="passaporte" name="passaporte" value="{{ user.passaporte or '' }}" placeholder="Número do passaporte">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-salvar">
+                                    <i class="fas fa-save"></i> Salvar Alterações
+                                </button>
+                                <button type="button" class="btn-cancelar" onclick="window.location.href='/dashboard'">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="perfil-section">
+                        <h2><i class="fas fa-info-circle"></i> Informações da Conta</h2>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="fas fa-user"></i>
+                                <div>
+                                    <strong>Nome de usuário:</strong>
+                                    <span>{{ user.nome or 'Não informado' }}</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <strong>Email:</strong>
+                                    <span>{{ user.email or 'Não informado' }}</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <strong>Endereço:</strong>
+                                    <span>{{ user.endereco or 'Não informado' }}</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <strong>Telefone:</strong>
+                                    <span>{{ user.telefone or 'Não informado' }}</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-id-card"></i>
+                                <div>
+                                    <strong>CPF:</strong>
+                                    <span>{{ user.cpf or 'Não informado' }}</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-passport"></i>
+                                <div>
+                                    <strong>Passaporte:</strong>
+                                    <span>{{ user.passaporte or 'Não informado' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Turismo pelo Sudeste. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Máscara para CPF
+        document.getElementById('cpf').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = value;
+        });
+
+        // Máscara para telefone
+        document.getElementById('telefone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{4,5})(\d{4})$/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+
+        // Preview da foto de perfil
+        document.getElementById('foto_perfil').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.querySelector('.foto-perfil img');
+                    if (img) {
+                        img.src = e.target.result;
+                    } else {
+                        const placeholder = document.querySelector('.foto-placeholder');
+                        placeholder.innerHTML = `<img src="${e.target.result}" alt="Preview da foto">`;
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

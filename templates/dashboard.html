@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Turismo pelo Sudeste</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    {% set mensagem = get_flashed_messages() %}
+    {% if mensagem %}
+        <div class="flash_alerta">
+            {{ mensagem[0] }}
+        </div>
+    {% endif %}
+
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1><i class="fas fa-mountain"></i> Turismo Sudeste</h1>
+            </div>
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link active">
+                    <i class="fas fa-home"></i> Início
+                </a>
+                <a href="/minhas_avaliacoes" class="nav-link">
+                    <i class="fas fa-star"></i> Minhas Avaliações
+                </a>
+                <a href="/perfil" class="nav-link">
+                    <i class="fas fa-user"></i> Perfil
+                </a>
+                <a href="/logout" class="nav-link logout">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="welcome-section">
+                <h2>Bem-vindo, {{ user.nome }}!</h2>
+                <p>Descubra os melhores pontos turísticos do Sudeste do Brasil</p>
+                {% if user.is_admin %}
+                <div class="admin-actions">
+                    <a href="/admin/adicionar_ponto" class="btn-admin">Adicionar Novo Ponto</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Barra de Pesquisa -->
+            <div class="search-section">
+                <h3><i class="fas fa-search"></i> Pesquisar Pontos Turísticos</h3>
+                <form action="/pesquisar" method="post" class="search-form">
+                    <div class="search-input-group">
+                        <input type="text" name="pesquisa" placeholder="Digite o nome, descrição ou categoria do ponto turístico..." 
+                               value="{{ termo_pesquisa or '' }}" class="search-input">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i> Pesquisar
+                        </button>
+                        {% if termo_pesquisa %}
+                        <a href="/dashboard" class="clear-search-btn">
+                            <i class="fas fa-times"></i> Limpar
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+
+            <div class="filters">
+                <h3>Filtrar por categoria:</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-category="all">Todos</button>
+                    <button class="filter-btn" data-category="Religioso/Histórico">Religioso/Histórico</button>
+                    <button class="filter-btn" data-category="Natureza/Panorâmico">Natureza/Panorâmico</button>
+                    <button class="filter-btn" data-category="Praia/Recreação">Praia/Recreação</button>
+                    <button class="filter-btn" data-category="Natureza/Educativo">Natureza/Educativo</button>
+                    <button class="filter-btn" data-category="Cultura/Entretenimento">Cultura/Entretenimento</button>
+                </div>
+            </div>
+
+            <!-- Pontos Turísticos por Estado -->
+            <div class="pontos-section">
+                <h3><i class="fas fa-map-marker-alt"></i> Pontos Turísticos do Sudeste</h3>
+                
+                <!-- Rio de Janeiro -->
+                <div class="estado-section">
+                    <h4 class="estado-titulo">
+                        <i class="fas fa-mountain"></i> Rio de Janeiro
+                    </h4>
+                    {% if pontos_por_estado.RJ %}
+                        <div class="pontos-grid">
+                            {% for ponto in pontos_por_estado.RJ %}
+                            <div class="ponto-card" data-category="{{ ponto.categoria }}">
+                                <div class="ponto-image">
+                                    <img src="/static/uploads/{{ ponto.imagem or 'default.jpg' }}" alt="{{ ponto.nome }}" onerror="this.src='/static/css/imagens/default.jpg'">
+                                    <div class="categoria-badge">{{ ponto.categoria }}</div>
+                                    <div class="ranking-badge">
+                                        <i class="fas fa-trophy"></i> #{{ loop.index }}
+                                    </div>
+                                </div>
+                                
+                                <div class="ponto-content">
+                                    <h3>{{ ponto.nome }}</h3>
+                                    <p class="ponto-descricao">{{ ponto.descricao[:150] }}{% if ponto.descricao|length > 150 %}...{% endif %}</p>
+                                    
+                                    <!-- Sistema de avaliações -->
+                                    <div class="avaliacoes-section">
+                                        <div class="estrelas-atuais">
+                                            {% set media = (ponto.media_avaliacoes or 0)|float %}
+                                            {% for i in range(1, 6) %}
+                                                {% if i <= media %}
+                                                    <i class="fas fa-star star-filled"></i>
+                                                {% else %}
+                                                    <i class="far fa-star star-empty"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <span class="media-nota">{{ "%.1f"|format(media) }}</span>
+                                            <span class="total-avaliacoes">({{ ponto.total_avaliacoes or 0 }} avaliações)</span>
+                                        </div>
+                                        
+                                        <!-- Formulário de Avaliação -->
+                                        <div class="avaliar-form">
+                                            <form action="/avaliar" method="post" class="avaliar-form-inline">
+                                                <input type="hidden" name="ponto_id" value="{{ ponto.id }}">
+                                                <div class="estrelas-input">
+                                                    <span>Avaliar:</span>
+                                                    <div class="star-rating">
+                                                        {% for i in range(1, 6) %}
+                                                            <input type="radio" name="nota" value="{{ i }}" id="star{{ i }}_{{ ponto.id }}" class="star-input">
+                                                            <label for="star{{ i }}_{{ ponto.id }}" class="star-label">
+                                                                <i class="fas fa-star"></i>
+                                                            </label>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                <div class="comentario-input">
+                                                    <input type="text" name="comentario" placeholder="Deixe um comentário (opcional)" class="comentario-field">
+                                                </div>
+                                                <button type="submit" class="btn-avaliar">
+                                                    <i class="fas fa-star"></i> Avaliar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="ponto-info">
+                                        <div class="info-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span>{{ ponto.horario_funcionamento or 'Não informado' }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            <span>{{ ponto.preco_entrada or 'Gratuito' }}</span>
+                                        </div>
+                                    </div>
+                                    <a href="/ponto/{{ ponto.id }}" class="btn-ver-detalhes">
+                                        <i class="fas fa-eye"></i> Ver Detalhes
+                                    </a>
+                                    {% if user.is_admin %}
+                                    <a href="/admin/editar_ponto/{{ ponto.id }}" class="btn-editar-ponto">
+                                        <i class="fas fa-edit"></i> Editar Ponto Turístico
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>Nenhum ponto turístico encontrado no Rio de Janeiro</h3>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- São Paulo -->
+                <div class="estado-section">
+                    <h4 class="estado-titulo">
+                        <i class="fas fa-building"></i> São Paulo
+                    </h4>
+                    {% if pontos_por_estado.SP %}
+                        <div class="pontos-grid">
+                            {% for ponto in pontos_por_estado.SP %}
+                            <div class="ponto-card" data-category="{{ ponto.categoria }}">
+                                <div class="ponto-image">
+                                    <img src="/static/uploads/{{ ponto.imagem or 'default.jpg' }}" alt="{{ ponto.nome }}" onerror="this.src='/static/css/imagens/default.jpg'">
+                                    <div class="categoria-badge">{{ ponto.categoria }}</div>
+                                    <div class="ranking-badge">
+                                        <i class="fas fa-trophy"></i> #{{ loop.index }}
+                                    </div>
+                                </div>
+                                
+                                <div class="ponto-content">
+                                    <h3>{{ ponto.nome }}</h3>
+                                    <p class="ponto-descricao">{{ ponto.descricao[:150] }}{% if ponto.descricao|length > 150 %}...{% endif %}</p>
+                                    
+                                    <!-- Sistema de avaliações -->
+                                    <div class="avaliacoes-section">
+                                        <div class="estrelas-atuais">
+                                            {% set media = (ponto.media_avaliacoes or 0)|float %}
+                                            {% for i in range(1, 6) %}
+                                                {% if i <= media %}
+                                                    <i class="fas fa-star star-filled"></i>
+                                                {% else %}
+                                                    <i class="far fa-star star-empty"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <span class="media-nota">{{ "%.1f"|format(media) }}</span>
+                                            <span class="total-avaliacoes">({{ ponto.total_avaliacoes or 0 }} avaliações)</span>
+                                        </div>
+                                        
+                                        <!-- Formulário de Avaliação -->
+                                        <div class="avaliar-form">
+                                            <form action="/avaliar" method="post" class="avaliar-form-inline">
+                                                <input type="hidden" name="ponto_id" value="{{ ponto.id }}">
+                                                <div class="estrelas-input">
+                                                    <span>Avaliar:</span>
+                                                    <div class="star-rating">
+                                                        {% for i in range(1, 6) %}
+                                                            <input type="radio" name="nota" value="{{ i }}" id="star{{ i }}_{{ ponto.id }}" class="star-input">
+                                                            <label for="star{{ i }}_{{ ponto.id }}" class="star-label">
+                                                                <i class="fas fa-star"></i>
+                                                            </label>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                <div class="comentario-input">
+                                                    <input type="text" name="comentario" placeholder="Deixe um comentário (opcional)" class="comentario-field">
+                                                </div>
+                                                <button type="submit" class="btn-avaliar">
+                                                    <i class="fas fa-star"></i> Avaliar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="ponto-info">
+                                        <div class="info-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span>{{ ponto.horario_funcionamento or 'Não informado' }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            <span>{{ ponto.preco_entrada or 'Gratuito' }}</span>
+                                        </div>
+                                    </div>
+                                    <a href="/ponto/{{ ponto.id }}" class="btn-ver-detalhes">
+                                        <i class="fas fa-eye"></i> Ver Detalhes
+                                    </a>
+                                    {% if user.is_admin %}
+                                    <a href="/admin/editar_ponto/{{ ponto.id }}" class="btn-editar-ponto">
+                                        <i class="fas fa-edit"></i> Editar Ponto Turístico
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>Nenhum ponto turístico encontrado em São Paulo</h3>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Minas Gerais -->
+                <div class="estado-section">
+                    <h4 class="estado-titulo">
+                        <i class="fas fa-mountain"></i> Minas Gerais
+                    </h4>
+                    {% if pontos_por_estado.MG %}
+                        <div class="pontos-grid">
+                            {% for ponto in pontos_por_estado.MG %}
+                            <div class="ponto-card" data-category="{{ ponto.categoria }}">
+                                <div class="ponto-image">
+                                    <img src="/static/uploads/{{ ponto.imagem or 'default.jpg' }}" alt="{{ ponto.nome }}" onerror="this.src='/static/css/imagens/default.jpg'">
+                                    <div class="categoria-badge">{{ ponto.categoria }}</div>
+                                    <div class="ranking-badge">
+                                        <i class="fas fa-trophy"></i> #{{ loop.index }}
+                                    </div>
+                                </div>
+                                
+                                <div class="ponto-content">
+                                    <h3>{{ ponto.nome }}</h3>
+                                    <p class="ponto-descricao">{{ ponto.descricao[:150] }}{% if ponto.descricao|length > 150 %}...{% endif %}</p>
+                                    
+                                    <!-- Sistema de avaliações -->
+                                    <div class="avaliacoes-section">
+                                        <div class="estrelas-atuais">
+                                            {% set media = (ponto.media_avaliacoes or 0)|float %}
+                                            {% for i in range(1, 6) %}
+                                                {% if i <= media %}
+                                                    <i class="fas fa-star star-filled"></i>
+                                                {% else %}
+                                                    <i class="far fa-star star-empty"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <span class="media-nota">{{ "%.1f"|format(media) }}</span>
+                                            <span class="total-avaliacoes">({{ ponto.total_avaliacoes or 0 }} avaliações)</span>
+                                        </div>
+                                        
+                                        <!-- Formulário de Avaliação -->
+                                        <div class="avaliar-form">
+                                            <form action="/avaliar" method="post" class="avaliar-form-inline">
+                                                <input type="hidden" name="ponto_id" value="{{ ponto.id }}">
+                                                <div class="estrelas-input">
+                                                    <span>Avaliar:</span>
+                                                    <div class="star-rating">
+                                                        {% for i in range(1, 6) %}
+                                                            <input type="radio" name="nota" value="{{ i }}" id="star{{ i }}_{{ ponto.id }}" class="star-input">
+                                                            <label for="star{{ i }}_{{ ponto.id }}" class="star-label">
+                                                                <i class="fas fa-star"></i>
+                                                            </label>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                <div class="comentario-input">
+                                                    <input type="text" name="comentario" placeholder="Deixe um comentário (opcional)" class="comentario-field">
+                                                </div>
+                                                <button type="submit" class="btn-avaliar">
+                                                    <i class="fas fa-star"></i> Avaliar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="ponto-info">
+                                        <div class="info-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span>{{ ponto.horario_funcionamento or 'Não informado' }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            <span>{{ ponto.preco_entrada or 'Gratuito' }}</span>
+                                        </div>
+                                    </div>
+                                    <a href="/ponto/{{ ponto.id }}" class="btn-ver-detalhes">
+                                        <i class="fas fa-eye"></i> Ver Detalhes
+                                    </a>
+                                    {% if user.is_admin %}
+                                    <a href="/admin/editar_ponto/{{ ponto.id }}" class="btn-editar-ponto">
+                                        <i class="fas fa-edit"></i> Editar Ponto Turístico
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>Nenhum ponto turístico encontrado em Minas Gerais</h3>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Espírito Santo -->
+                <div class="estado-section">
+                    <h4 class="estado-titulo">
+                        <i class="fas fa-sun"></i> Espírito Santo
+                    </h4>
+                    {% if pontos_por_estado.ES %}
+                        <div class="pontos-grid">
+                            {% for ponto in pontos_por_estado.ES %}
+                            <div class="ponto-card" data-category="{{ ponto.categoria }}">
+                                <div class="ponto-image">
+                                    <img src="/static/uploads/{{ ponto.imagem or 'default.jpg' }}" alt="{{ ponto.nome }}" onerror="this.src='/static/css/imagens/default.jpg'">
+                                    <div class="categoria-badge">{{ ponto.categoria }}</div>
+                                    <div class="ranking-badge">
+                                        <i class="fas fa-trophy"></i> #{{ loop.index }}
+                                    </div>
+                                </div>
+                                
+                                <div class="ponto-content">
+                                    <h3>{{ ponto.nome }}</h3>
+                                    <p class="ponto-descricao">{{ ponto.descricao[:150] }}{% if ponto.descricao|length > 150 %}...{% endif %}</p>
+                                    
+                                    <!-- Sistema de avaliações -->
+                                    <div class="avaliacoes-section">
+                                        <div class="estrelas-atuais">
+                                            {% set media = (ponto.media_avaliacoes or 0)|float %}
+                                            {% for i in range(1, 6) %}
+                                                {% if i <= media %}
+                                                    <i class="fas fa-star star-filled"></i>
+                                                {% else %}
+                                                    <i class="far fa-star star-empty"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <span class="media-nota">{{ "%.1f"|format(media) }}</span>
+                                            <span class="total-avaliacoes">({{ ponto.total_avaliacoes or 0 }} avaliações)</span>
+                                        </div>
+                                        
+                                        <!-- Formulário de Avaliação -->
+                                        <div class="avaliar-form">
+                                            <form action="/avaliar" method="post" class="avaliar-form-inline">
+                                                <input type="hidden" name="ponto_id" value="{{ ponto.id }}">
+                                                <div class="estrelas-input">
+                                                    <span>Avaliar:</span>
+                                                    <div class="star-rating">
+                                                        {% for i in range(1, 6) %}
+                                                            <input type="radio" name="nota" value="{{ i }}" id="star{{ i }}_{{ ponto.id }}" class="star-input">
+                                                            <label for="star{{ i }}_{{ ponto.id }}" class="star-label">
+                                                                <i class="fas fa-star"></i>
+                                                            </label>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                <div class="comentario-input">
+                                                    <input type="text" name="comentario" placeholder="Deixe um comentário (opcional)" class="comentario-field">
+                                                </div>
+                                                <button type="submit" class="btn-avaliar">
+                                                    <i class="fas fa-star"></i> Avaliar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="ponto-info">
+                                        <div class="info-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span>{{ ponto.horario_funcionamento or 'Não informado' }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            <span>{{ ponto.preco_entrada or 'Gratuito' }}</span>
+                                        </div>
+                                    </div>
+                                    <a href="/ponto/{{ ponto.id }}" class="btn-ver-detalhes">
+                                        <i class="fas fa-eye"></i> Ver Detalhes
+                                    </a>
+                                    {% if user.is_admin %}
+                                    <a href="/admin/editar_ponto/{{ ponto.id }}" class="btn-editar-ponto">
+                                        <i class="fas fa-edit"></i> Editar Ponto Turístico
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>Nenhum ponto turístico encontrado no Espírito Santo</h3>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Turismo pelo Sudeste. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Filtro por categoria
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.dataset.category;
+                
+                // Atualizar botões ativos
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Filtrar cards
+                document.querySelectorAll('.ponto-card').forEach(card => {
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Sistema de estrelas interativo
+        document.querySelectorAll('.star-rating').forEach(rating => {
+            const stars = rating.querySelectorAll('.star-label');
+            const inputs = rating.querySelectorAll('.star-input');
+            
+            stars.forEach((star, index) => {
+                star.addEventListener('mouseenter', function() {
+                    // Limpar todas as estrelas
+                    stars.forEach(s => s.style.color = '#bdc3c7');
+                    
+                    // Preencher até a estrela atual
+                    for (let i = 0; i <= index; i++) {
+                        stars[i].style.color = '#f39c12';
+                    }
+                });
+                
+                star.addEventListener('mouseleave', function() {
+                    // Restaurar estado baseado no input selecionado
+                    const checkedInput = rating.querySelector('.star-input:checked');
+                    if (checkedInput) {
+                        const checkedIndex = Array.from(inputs).indexOf(checkedInput);
+                        stars.forEach((s, i) => {
+                            s.style.color = i <= checkedIndex ? '#f39c12' : '#bdc3c7';
+                        });
+                    } else {
+                        stars.forEach(s => s.style.color = '#bdc3c7');
+                    }
+                });
+                
+                star.addEventListener('click', function() {
+                    // Marcar o input correspondente
+                    inputs[index].checked = true;
+                    
+                    // Atualizar visual
+                    stars.forEach((s, i) => {
+                        s.style.color = i <= index ? '#f39c12' : '#bdc3c7';
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

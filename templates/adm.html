@@ -1,67 +1,121 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turismo pelo Sudeste</title>
-    <link rel="stylesheet" href="../static/css/adm.css">
+    <title>Administração - Turismo pelo Sudeste</title>
+    <link rel="stylesheet" href="/static/css/adm.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-
-<body>
 <body>
     {% set mensagem = get_flashed_messages() %}
-    {% if mensagem[0] == "Este Usuario ja esta cadastrado" %}
+    {% if mensagem %}
         <div class="flash_alerta">
-            {{ mensagem[0] }}
-        </div>
-    {% elif mensagem[0] == "Usuario cadastrado com sucesso" %}
-        <div class="flash_alerta2">
             {{ mensagem[0] }}
         </div>
     {% endif %}
 
-    <h1 class="titulo">Admistrador</h1>
-    <!-- resto do seu código continua normalmente -->
-</body>
-    
-
-    <div id = "Plano_fundo">
-        <h1>Cadastrar um usuario</h1>
-        <div id="Plano_frente">
-            <form action="/cadastrarUsuario" id="login" method="post">
-                <label for="nome">NOME</label>
-                <input type="text" name="nome" id="nome" required placeholder=" Digite seu nome: "><br>
-                <label for="senha" id="senha">SENHA</label>
-                <input type="text" name="senha" id="senha" required placeholder=" Digite sua senha: "><br><br>
-                <button type="submit" id="btn_login">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span> CADASTRAR
-
-                </button>
-            </form>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1><i class="fas fa-mountain"></i> Turismo Sudeste - Admin</h1>
+            </div>
+            <nav class="nav">
+                <a href="/dashboard" class="nav-link">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="/logout" class="nav-link logout">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </nav>
         </div>
-    </div>
+    </header>
 
-    <div id = fundoUsuario class = "listaUsuarios">
-        <h1> Usuario Cadastrado</h1>
-        <div id = frenteUsuario class="listaUsuarios">
-            {% if usuarios %}
-                {% for c in usuarios %}
-                    <ul>
-                        <li>{{c["nome"]}}</li>
-                    </ul>
-                {%endfor%}
-            {% else %}
-            <h1> Não existe usuario cadastrados</h1>
-            {%endif%}
+    <main class="main">
+        <div class="container">
+            <div class="admin-header">
+                <h1><i class="fas fa-cogs"></i> Painel de Administração</h1>
+                <p>Gerencie usuários e configurações do sistema</p>
+            </div>
+            
+            <div class="admin-grid">
+                <div class="admin-section">
+                    <h2><i class="fas fa-user-plus"></i> Cadastrar Novo Usuário</h2>
+                    <form action="/cadastrarUsuario" method="post" class="admin-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nome">Nome Completo *</label>
+                                <input type="text" id="nome" name="nome" required placeholder="Nome completo do usuário">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required placeholder="email@exemplo.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="senha">Senha *</label>
+                            <input type="password" id="senha" name="senha" required placeholder="Senha do usuário">
+                        </div>
+                        <button type="submit" class="btn-cadastrar">
+                            <i class="fas fa-user-plus"></i> Cadastrar Usuário
+                        </button>
+                    </form>
+                </div>
 
+                <div class="admin-section">
+                    <h2><i class="fas fa-users"></i> Usuários Cadastrados</h2>
+                    <div class="usuarios-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-users"></i>
+                            <span>Total: {{ usuarios|length }} usuários</span>
+                        </div>
+                    </div>
+                    <div class="usuarios-list">
+                        {% for usuario in usuarios %}
+                        <div class="usuario-item">
+                            <div class="usuario-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="usuario-info">
+                                <h3>{{ usuario[1] }}</h3>
+                                <p class="usuario-email">{{ usuario[2] }}</p>
+                                <div class="usuario-details">
+                                    <span class="usuario-cpf">
+                                        <i class="fas fa-id-card"></i> 
+                                        {{ usuario[6] or 'CPF não informado' }}
+                                    </span>
+                                    <span class="usuario-data">
+                                        <i class="fas fa-calendar"></i> 
+                                        Cadastrado em: {{ usuario[9][:10] if usuario[9] else 'Data não disponível' }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="usuario-actions">
+                                <button class="btn-action" title="Ver detalhes">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
 
+            <div class="admin-actions">
+                <a href="/dashboard" class="btn-voltar">
+                    <i class="fas fa-arrow-left"></i> Voltar ao Dashboard
+                </a>
+            </div>
         </div>
-    </div>
+    </main>
 
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Turismo pelo Sudeste. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 </body>
-
 </html>

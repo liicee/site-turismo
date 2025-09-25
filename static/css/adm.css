@@ -1,44 +1,436 @@
-
-@import url(home.css);
-
-.titulo{
-    backdrop-filter: blur(10px);
-    font-size: 50px;
-    border-radius: 30px;
-    font-weight: bold;
-    text-align: center;
+/* Reset e configurações básicas */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
 
-div#Plano_fundo{
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.header {
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    margin: 4% 25% 25% 25%;
-    padding: 10px; /* Ajuste o padding como necessário */
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 20px;
+}
+
+.logo h1 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.logo i {
+    color: #3498db;
+    margin-right: 0.5rem;
+}
+
+.nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-link:hover {
+    background: #3498db;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    background: #3498db;
+    color: white;
+}
+
+.nav-link.logout {
+    background: #e74c3c;
+    color: white;
+}
+
+.nav-link.logout:hover {
+    background: #c0392b;
+}
+
+/* Main content */
+.main {
+    padding: 2rem 0;
+    min-height: calc(100vh - 200px);
+}
+
+.admin-header {
     text-align: center;
-    border-radius: 30px;
-    font-weight: bold;
-    box-shadow: 4px 6px black;
+    margin-bottom: 3rem;
+    color: white;
+}
+
+.admin-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.admin-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Grid de administração */
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.admin-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.admin-section h2 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.admin-section h2 i {
+    color: #3498db;
+}
+
+/* Formulário de cadastro */
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    padding: 0.8rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.btn-cadastrar {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+.btn-cadastrar:hover {
+    background: #229954;
+    transform: translateY(-2px);
+}
+
+/* Estatísticas */
+.usuarios-stats {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.stat-item i {
+    color: #3498db;
+    font-size: 1.3rem;
+}
+
+/* Lista de usuários */
+.usuarios-list {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+}
+
+.usuario-item {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.usuario-item:last-child {
+    border-bottom: none;
+}
+
+.usuario-item:hover {
+    background: #f8f9fa;
+}
+
+.usuario-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #3498db;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.usuario-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.usuario-info h3 {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+}
+
+.usuario-email {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.usuario-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.usuario-cpf,
+.usuario-data {
+    color: #7f8c8d;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.usuario-cpf i,
+.usuario-data i {
+    color: #3498db;
+    width: 12px;
+}
+
+.usuario-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.btn-action {
+    background: #ecf0f1;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7f8c8d;
+}
+
+.btn-action:hover {
+    background: #3498db;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Ações de administração */
+.admin-actions {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.btn-voltar {
+    background: #95a5a6;
+    color: white;
+    text-decoration: none;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-voltar:hover {
+    background: #7f8c8d;
+    transform: translateY(-2px);
+}
+
+/* Footer */
+.footer {
+    background: rgba(44, 62, 80, 0.95);
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+/* Flash messages */
+.flash_alerta {
+    background: #e74c3c;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.flash_alerta2 {
+    background: #27ae60;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+/* Responsividade */
+@media (max-width: 968px) {
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header .container {
+        flex-direction: column;
+        gap: 1rem;
+    }
     
-
+    .nav {
+        gap: 1rem;
+    }
+    
+    .admin-header h1 {
+        font-size: 2rem;
+    }
+    
+    .admin-section {
+        padding: 1.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .usuario-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .usuario-actions {
+        align-self: flex-end;
+    }
 }
 
-div#Plano_fundo.listaUsuarios {
-    margin: 2% 50% 5% 5% ;
-    position: absolute;
-
+@media (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .admin-section {
+        padding: 1rem;
+    }
+    
+    .usuario-item {
+        padding: 1rem;
+    }
+    
+    .usuario-details {
+        font-size: 0.8rem;
+    }
 }
-
-div#frenteUsuario.listaUsuarios {
-    background-color: rgb(255, 255, 255);
-    margin: 5px;
-    padding: 30px;
-    text-align: center;
-    border-radius: 20px;
-    font-weight: bold;
-    box-shadow: 4px 5px 5px black;
-    padding: 25;
-    position: relative;
-     
-
-}
-
