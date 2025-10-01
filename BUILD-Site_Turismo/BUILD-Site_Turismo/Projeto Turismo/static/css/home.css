@@ -1,0 +1,104 @@
+@charset "UTF-8";
+
+
+body{
+    background: url('../css/imagens/sudeste-brasil-1.jpg') no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed;
+    background-color: beige; /* usado como fallback */
+}
+
+/* alertas */
+
+div.flash_alerta{
+    background-color: red;
+    font-size: 50px;
+    border-radius: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+div.flash_alerta2{
+    background-color: rgb(0, 238, 255);
+    font-size: 50px;
+    border-radius: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+div#Titulo{
+    text-align: center;
+    font-weight: bold;
+    background-color: cornflowerblue;
+    padding: 3px;
+    border-radius: 10px;
+}
+
+div#subtitulo{
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    font-style: oblique;
+}
+
+/* Fundo do formulario de login*/
+
+div#Plano_fundo{
+    backdrop-filter: blur(10px);
+    margin: 5% 25% 25% 25%;
+    padding: 30px;
+    text-align: center;
+    border-radius: 30px;
+    font-weight: bold;
+    box-shadow: 4px 6px black ;
+
+   /* fundo do login*/
+
+}div#Plano_frente{
+    background-color: rgb(255, 255, 255);
+    margin: 5px;
+    padding: 30px;
+    text-align: center;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 4px 5px 5px black;
+    padding: 25; 
+}
+
+label{
+    font-size: 25px;
+    padding: 30px;
+    font-weight: bold;
+    border-radius: 10x;
+    padding: 40px;
+    
+}
+
+/* tamanho do nome e senha*/
+input{
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+input:focus{
+    background-color: white;
+    color: black;
+}
+
+/*tamanho do botão*/
+
+button{
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 20px;
+    background-color: darkgray;
+    color: white;
+}
+
+button:hover{
+    background-color: black;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+}

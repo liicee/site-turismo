@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turismo pelo Sudeste</title>
+    <link rel="stylesheet" href="/static/css/home.css">
+</head>
+
+<body>
+<body>
+    {% set mensagem = get_flashed_messages() %}
+    {% if mensagem %}
+        <div class="flash_alerta">
+            {{ mensagem[0] }}
+        </div>
+    {% endif %}
+    <!-- resto do seu código continua normalmente -->
+</body>
+
+  
+
+    <div id = "Titulo">
+    <h1>Seja bem-vindo ao melhor site de turismo que você irá conhecer hoje!</h1> 
+    <br>
+    <hr>
+    </div>
+
+    <div id = "subtitulo"> 
+    <p>Procurando um destino para viajar? Vem que aqui é seu lugar!</p>
+    <p>Aqui temos os melhores Pontos Turísticos do Sudeste, venha conhece-los</p>
+    </div>
+    
+
+    <div id = "Plano_fundo">
+        <h1>LOGIN</h1>
+        <h1>Site de Turismo</h1>
+        <div id="Plano_frente">
+            <form action="/login" id="login" method="post">
+                <label for="nome">NOME</label>
+                <input type="text" name="nome" id="nome" required placeholder=" Digite seu nome: "><br>
+                <label for="senha" id="senha">SENHA</label>
+                <input type="password" name="senha" id="senha" required placeholder=" Digite sua senha: "><br><br>
+                <button type="submit" id="btn_login">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span> ENTRAR
+
+                </button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>

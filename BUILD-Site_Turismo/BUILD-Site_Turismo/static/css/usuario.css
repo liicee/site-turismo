@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+
+
+body{
+    background: url("../css/imagens/png.rj.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    background-color: beige; /* usado como fallback */
+}
+
+
+div#titulo{
+    text-align: center;
+    font-weight: bold;
+    background-color: cornflowerblue;
+    padding: 3px;
+    border-radius: 10px;
+}
